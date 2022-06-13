@@ -3,6 +3,6 @@
 ***
 **author**: Ábner Lucas
 **date**: Junho, 2022
-**[GitHub Repository](https://github.com/abner-lucas)**
+**[GitHub Repository](https://github.com/abner-lucas/time_series_prediction_on_EEG_data.git)**
 
-Jupyter Notebook for visualization csv's EEG data generated after pre processing with MNE-Python.
+Time series prediction on EEG data from subjects in Control and Gifted groups with experiments in visual ERP's.
