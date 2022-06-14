@@ -21,6 +21,15 @@ def load_evoked(filenames_list):
             EEG_evoked = pd.concat([EEG_evoked, temp_df], ignore_index=True) # adicionando os dados do arquivo ao df principal
     return EEG_evoked
 
+def load_ip(filenames_list):
+    EEG_ip = pd.DataFrame({}) 
+    for file_name in tqdm(filenames_list):
+        if file_name.endswith('ip.csv'):
+            temp_df = pd.read_csv('D:/Documentos/Mestrado/2021/UFPA Ciência Computação/EEG/outputs_eeg/' + file_name, dtype={'subject_id': str})
+            #temp_df = pd.read_csv('/content/drive/MyDrive/Colab Notebooks/PPGCC/EEG/outputs_eeg/' + file_name, dtype={'subject_id': str})
+            EEG_ip = pd.concat([EEG_ip, temp_df], ignore_index=True)
+    return EEG_ip
+
 def sample_data(subject_id, stimulus, EEG_data):
     
     sensor_positions = EEG_data.columns[5:]

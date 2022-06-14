@@ -114,14 +114,17 @@ class Subplot2D:
     self.ncols = ncols
     self.axes = []
 
-  def add_subplot(self, raw_data, index, title, sharex=None):
+  def add_subplot(self, raw_data, index, title, sharex=None, kind='line'):
     x = raw_data.index.values
     if sharex is None:
       ax = plt.subplot(self.nrows, self.ncols, index)
     else:
       ax = plt.subplot(self.nrows, self.ncols, index, sharex=self.axes[sharex-1])
     for i in range(len(raw_data.columns)):
-        ax.plot(x, raw_data[raw_data.columns[i]], label=raw_data.columns[i])
+        if kind == 'bar':
+            ax.bar(x, raw_data[raw_data.columns[i]], label=raw_data.columns[i])
+        else:
+            ax.plot(x, raw_data[raw_data.columns[i]], label=raw_data.columns[i])
     ax.legend()
     ax.set_title(title, fontsize=15)
     ax.set_xlabel("Time (ms)",fontsize=13)
