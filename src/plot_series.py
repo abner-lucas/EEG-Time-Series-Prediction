@@ -108,8 +108,8 @@ class PlotSeries:
         return fig
 
 class Subplot2D:
-  def __init__(self, nrows, ncols):
-    self.fig = plt.figure(figsize=(18,14))
+  def __init__(self, nrows, ncols, figsize=(18,14)):
+    self.fig = plt.figure(figsize=figsize)
     self.nrows = nrows
     self.ncols = ncols
     self.axes = []
