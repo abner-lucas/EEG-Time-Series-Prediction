@@ -47,10 +47,9 @@ def train_test_split(df, val_size, test_size):
     test_size = int(len(df['subject_id'].unique()) * (test_size))
     s_test = random.choices(df['subject_id'].unique(), k=test_size)
 
-    _sample_df, _data = mean_evokeds(df[~df['subject_id'].isin(s_test)])
-    mean_sensor = _data[_data.columns[:]].mean(axis=1).reset_index(drop=True)
-    mean_sensor_ = np.concatenate([mean_sensor for _ in range(len(df['subject_id'].unique()))])
-    df['mean'] = mean_sensor_
+    means= mean_sensors(df, s_test)
+    means_ = np.concatenate([means for _ in range(len(df['subject_id'].unique()))])
+    df['mean'] = means_
 
     subjects_validation = df[df['subject_id'].isin(s_validation)].reset_index(drop=True)
     subjects_validation.drop(columns=['subject_id', 'group', 'time'], inplace=True)
@@ -64,7 +63,7 @@ def train_test_split(df, val_size, test_size):
     subjects_train.drop(columns=['subject_id', 'group', 'time'], inplace=True)
     #subjects_train['mean'] = subjects_train[subjects_train.columns[:]].mean(axis=1)
 
-    return subjects_train, subjects_validation, subjects_test
+    return subjects_train, subjects_validation, subjects_test, means
 
 def MLP(n_features, n_neurons, kernel_initializer, activation, func_loss, optimizer, metrics):
     model = Sequential()

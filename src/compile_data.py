@@ -171,3 +171,8 @@ def mean_evokeds(EEG_data):
     raw_data = pd.pivot_table(df_data, values='sensor_value', index='time', columns='sensor_position', aggfunc='mean')
 
     return sensorT_df, raw_data
+
+def mean_sensors(df, s_exclude):
+    sample_df, data = mean_evokeds(df[~df['subject_id'].isin(s_exclude)])
+    mean_sensors = data[data.columns[:]].mean(axis=1).reset_index(drop=True)
+    return mean_sensors
