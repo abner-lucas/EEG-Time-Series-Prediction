@@ -1,5 +1,6 @@
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np
+from src.compile_data import *
 import random
 from keras.models import Sequential
 from keras.layers import Dense
@@ -43,12 +44,17 @@ def train_test_split(df, val_size, test_size):
     val_size = int(len(df['subject_id'].unique()) * (val_size))
     s_validation = random.choices(df['subject_id'].unique(), k=val_size)
     
+    test_size = int(len(df['subject_id'].unique()) * (test_size))
+    s_test = random.choices(df['subject_id'].unique(), k=test_size)
+
+    _sample_df, _data = mean_evokeds(df[~df['subject_id'].isin(s_test)])
+    mean_sensor = _data[_data.columns[:]].mean(axis=1).reset_index(drop=True)
+    mean_sensor_ = np.concatenate([mean_sensor for _ in range(len(df['subject_id'].unique()))])
+    df['mean'] = mean_sensor_
+
     subjects_validation = df[df['subject_id'].isin(s_validation)].reset_index(drop=True)
     subjects_validation.drop(columns=['subject_id', 'group', 'time'], inplace=True)
     #subjects_test['mean'] = subjects_test[subjects_test.columns[:]].mean(axis=1)
-    
-    test_size = int(len(df['subject_id'].unique()) * (test_size))
-    s_test = random.choices(df['subject_id'].unique(), k=test_size)
 
     subjects_test = df[df['subject_id'].isin(s_test)].reset_index(drop=True)
     subjects_test.drop(columns=['subject_id', 'group', 'time'], inplace=True)

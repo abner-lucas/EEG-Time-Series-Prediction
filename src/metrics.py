@@ -17,6 +17,6 @@ def MAE(y_test, prediction):
 def MAPE(y_test, prediction):
     soma = 0
     for i in range(len(y_test)):
-        soma += abs((y_test[i] - prediction[i]) / y_test[i]) * 100
+        soma += abs((y_test[i] - prediction[i]) / y_test[i]) #* 100
     media_erro = soma / len(y_test)
     return media_erro.round(5)
