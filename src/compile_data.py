@@ -125,7 +125,7 @@ def evoked_data(subject_id, EEG_data):
     return sensorT_df, raw_data
 
 def mean_evokeds(EEG_data):
-    sensor_positions = EEG_data.columns[3:]
+    sensor_positions = EEG_data.columns[3:].copy()
     channels = [i for i in range(len(sensor_positions))]
     group = EEG_data['group'].unique()[0]
     time = EEG_data['time'].unique()

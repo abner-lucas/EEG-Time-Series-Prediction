@@ -3,7 +3,7 @@ import numpy as np
 from src.compile_data import *
 import random
 from keras.models import Sequential
-from keras.layers import Dense
+from keras.layers import Dense, Dropout
 
 def data_norm(data, v_min, v_max):
     # data = np.reshape(data, (v_min, 1))
@@ -68,7 +68,9 @@ def train_test_split(df, val_size, test_size):
 def MLP(n_features, n_neurons, kernel_initializer, activation, func_loss, optimizer, metrics):
     model = Sequential()
     model.add(Dense(n_neurons, input_dim=n_features, kernel_initializer=kernel_initializer,
-                    activation=activation)) 
+                    activation=activation))
+    model.add(Dropout(0.2))
+    model.add(Dense(n_neurons, kernel_initializer=kernel_initializer, activation=activation))
     model.add(Dense(1))
-    model.compile(loss=func_loss, optimizer=optimizer, metrics=[metrics])
+    model.compile(loss=func_loss, optimizer=optimizer, metrics=metrics)
     return model
