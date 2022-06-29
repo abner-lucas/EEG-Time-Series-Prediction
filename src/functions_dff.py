@@ -4,6 +4,7 @@ from src.compile_data import *
 import random
 from keras.models import Sequential
 from keras.layers import Dense, Dropout
+import tensorflow as tf
 
 def data_norm(data, v_min, v_max):
     # data = np.reshape(data, (v_min, 1))
@@ -73,4 +74,41 @@ def MLP(n_features, n_neurons, kernel_initializer, activation, func_loss, optimi
     model.add(Dense(n_neurons, kernel_initializer=kernel_initializer, activation=activation))
     model.add(Dense(1))
     model.compile(loss=func_loss, optimizer=optimizer, metrics=metrics)
+    return model
+
+def build_model(hp):
+    # Tune the learning rate for the optimizer
+    # Choose an optimal value from 0.01, 0.001, or 0.0001
+    hp_learning_rate = hp.Choice('learning_rate', values=[1e-2, 1e-3, 1e-4])
+
+    # Tune the optimizer
+    
+    hp_optimizer = hp.Choice('optimizer', values=['adam', 'sgd', 'adagrad', 'rmsprop'])
+    if hp_optimizer == 'adam':
+        hp_optimizer = tf.keras.optimizers.Adam(learning_rate=hp_learning_rate)
+    elif hp_optimizer == 'sgd':
+        hp_optimizer = tf.keras.optimizers.SGD(learning_rate=hp_learning_rate)
+
+    hp_net_depth = hp.Int('net_depth', min_value = 2, max_value = 6)
+
+
+    # Tune the number of units in the first Dense layer
+    # Choose an optimal value between 9-54
+    hp_units = []
+    for i in range(hp_net_depth):
+        hp_units.append(hp.Int('units'+str(i), min_value=9, max_value=54, step=9))
+
+    # Tune kernel_initializer
+    hp_kernel_init= hp.Choice('kernel_init', values=['random_normal', 'uniform', 'random_uniform'])
+
+    hp_activation = hp.Choice('activation', values=['relu','sigmoid', 'linear', 'softmax'])
+    hp_activation_out = hp.Choice('activation_out', values=['relu','sigmoid', 'linear', 'softmax'])
+
+    model = Sequential()
+    for i in range(hp_net_depth):
+        model.add(Dense(units=hp_units[i], activation=hp_activation, kernel_initializer=hp_kernel_init))
+        if i == hp_net_depth-1:
+            model.add(Dense(1, activation=hp_activation_out, kernel_initializer=hp_kernel_init))
+    model.compile(optimizer = hp_optimizer, loss = 'mse', metrics=['mse'])
+
     return model
